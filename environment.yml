@@ -1,0 +1,14 @@
+name: wine-quality
+channels:
+  - conda-forge
+  - defaults
+  - https://repo.anaconda.com/pkgs/main
+  - https://repo.anaconda.com/pkgs/r
+dependencies:
+  - pandas
+  - scikit-learn
+  - jupyter
+  - python=3
+  - numpy
+  - matplotlib
+prefix: /Users/lishuhang/miniforge3/envs/wine-quality
