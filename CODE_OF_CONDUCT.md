@@ -29,3 +29,5 @@ Aidan Hew
 Karan Bains
 
 All complaints will be reviewed by the working group, and appropriate responses and actions will be taken based on the specific circumstances.
+
+This Code of Conduct is adapted from the Contributor Covenant, version 1.3.0, available at http://contributor-covenant.org/version/1/3/0/, and the Swift Code of Conduct, available at https://www.swift.org/community/#code-of-conduct, and the Pandas Code of Conduct, available at https://github.com/pandas-dev/pandas-governance/blob/main/code-of-conduct.md
