@@ -1,7 +1,9 @@
 # Wine-Quality-Classification Analysis
 ## Contributors
 Aidan Hew
+
 Karan Bains
+
 SHUHANG LI
 
 ## Project Summary
