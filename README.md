@@ -26,6 +26,7 @@ If your laptop is not MacOS, use the following command line:
   - python=3
   - numpy
   - matplotlib
+  - altair
 
 ## Name of the license
 The project is licensed under the MIT License and CC BY-NC-ND 4.0 license. The detail is in LICENSE.md.
