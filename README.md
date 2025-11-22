@@ -7,7 +7,7 @@ Karan Bains
 SHUHANG LI
 
 ## Project Summary
-Wine Quality Classification is a reproduciable project for classifying different red wine based on the quality. This project includes exploratory data analysis , model training, testing, and result visualization. The goal is to help understand the key features affecting wine quality and build a model with good performance and generization.
+Wine Quality Classification is a reproducible project for classifying different red wines based on the quality. This project includes exploratory data analysis, model training, testing, and result visualization. The goal is to help understand the key features affecting wine quality and build a model with good performance and generalization.
 
 ## How to reproduce the Data Analysis
 1. Clone the repository to your local machine
@@ -23,6 +23,7 @@ Wine Quality Classification is a reproduciable project for classifying different
   - python=3
   - numpy
   - matplotlib
+  - altair
 
 ## Name of the license
 The project is licensed under the MIT License. The detail is in LICENSE.md.
