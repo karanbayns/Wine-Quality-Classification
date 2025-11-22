@@ -8,5 +8,4 @@ dependencies:
   - jupyter
   - python=3
   - numpy
-  - matplotlib
   - altair
