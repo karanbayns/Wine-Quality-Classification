@@ -1,3 +1,4 @@
+## Code License
 MIT License
 
 Copyright (c) 2025 karanbayns
@@ -19,3 +20,9 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Report License
+Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0)
+
+Wine-Quality-Classification  © 2025 by LI SHUHANG is licensed under CC BY-NC-ND 4.0. 
+To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-nd/4.0/
