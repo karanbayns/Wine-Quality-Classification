@@ -10,7 +10,7 @@ SHUHANG LI
 Wine Quality Classification is a reproduciable project for classifying different red wine based on the quality. This project aim to investigates whether physicochemical properties can reliably predict wine quality using classification, which includes exploratory data analysis , model training, testing, and result visualization. The goal is to help understand the key physicochemical features affecting wine quality and build a model with good performance and generization.
 
 ## How to reproduce the Data Analysis
-1. Clone the repository to your locl machine
+1. Clone the repository to your local machine
 2. Create the virtual environment by using the following command line (when your laptop is MacOS)：
 ‘conda env create -f environment.yml’
 ’conda activate wine-quality‘
