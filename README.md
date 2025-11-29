@@ -19,6 +19,23 @@ If your laptop is not MacOS, use the following command line:
 'conda activate <environment_name>'
 3. Open and run the 'wine-quality.ipynb' in Jupyter notebook
 
+## The way to use the container image
+1. Since we provide the 'docker-compose.yml' file, use the command line 'docker compose up -d', it will create a container and you will see the similar result below.
+<img width="673" height="59" alt="截屏2025-11-29 上午11 47 18" src="https://github.com/user-attachments/assets/b27dd873-45ac-4a41-93d1-5342a636e271" />
+2. Use the command line 'docker ps' to see the status of the container we created
+<img width="1511" height="72" alt="截屏2025-11-29 上午11 48 22" src="https://github.com/user-attachments/assets/51f54202-82a7-46ff-b8b6-66447fc48265" />
+3. Use the command line 'docker logs wine-quality-classification-analysis-env-1' ('wine-quality-classification-analysis-env-1' is the name of the container can be find in the 'docker ps' result)
+<img width="706" height="77" alt="截屏2025-11-29 上午11 50 19" src="https://github.com/user-attachments/assets/66c20388-559c-460e-ad37-51e67b87e337" />
+4. The result of step3 include URLs, use the second one, and open it in the broswer, and you will see the whole project opend in the Jupyter Lab.
+5. Now you can run the code to reproduce the anaylsis process.
+
+## The way to update container image
+1. Stop and remove the original one by using 'docker compose down'
+2. Pull the latest version of the images defined in `docker-compose.yml` by using 'docker compose pull'
+3. And just follow the process we mentioned in the 'The way to use the container image' so that you can use the updated container image.
+
+
+
 ## Dependencies
   - pandas
   - scikit-learn
