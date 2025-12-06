@@ -1,33 +1,37 @@
 ---
 title: 'Predicting Wine Quality: A Binary Classification Approach Using Physicochemical Properties'
-jupyter:
-  kernelspec:
-    display_name: Python [conda env:wine-quality]
-    language: python
-    name: conda-env-wine-quality-py
+format:
+    html:
+        toc: true
+        toc-depth: 2
+    pdf:
+        toc: true
+        toc-depth: 2
+bibliography:
+    wine-quality.bib
 ---
 
 
 **Authors:** Aidan Hew, Karan Bains, Shuhang Li
 
 
-## Summary
+# Summary
 
-This analysis investigates whether physicochemical properties (eg. alcohol content, volatile acidity, and sulphates) can reliably predict wine quality using classification. Using a dataset of 1,599 red Portuguese "Vinho Verde" wines, we developed models to distinguish between high-quality wines (rated 7 or higher) and lower-quality wines (rated below 7). The analysis employed logistic regression, decision trees, and random forest classifiers. Results indicate that alcohol content, volatile acidity, and sulphates are the strongest predictors of wine quality, with the random forest model achieving 87% accuracy and an AUC of 0.91. These findings suggest that automated quality assessment based on chemical properties is feasible and could support wine production quality control processes.
+This analysis investigates whether physicochemical properties (eg. alcohol content, volatile acidity, and sulphates) can reliably predict wine quality using classification. Using a dataset of 1,599 red Portuguese "Vinho Verde" wines @cortez2009data, we developed models to distinguish between high-quality wines (rated 7 or higher) and lower-quality wines (rated below 7). The analysis employed logistic regression, decision trees, and random forest classifiers. Results indicate that alcohol content, volatile acidity, and sulphates are the strongest predictors of wine quality, with the random forest model achieving 87% accuracy and an AUC of 0.91. These findings suggest that automated quality assessment based on chemical properties is feasible and could support wine production quality control processes.
 
-## Introduction
+# Introduction
 
 Wine quality assessment is traditionally performed by human experts through sensory evaluation, a process that is subjective, time-consuming, and requires specialized training. The ability to predict wine quality based on objective physicochemical measurements can potentially enable faster feedback to producers and more consistent quality standards.
 
 Wine quality is influenced by numerous chemical properties resulting from grape varieties, fermentation processes, and aging conditions. Key factors include acidity levels (which affect taste balance), alcohol content (which influences body and preservation), sulfur dioxide levels (used as preservatives), and various other compounds that contribute to flavor, aroma, and stability.
 
-### Research Question
+## Research Question
 
 **Can we accurately predict whether a red wine is of high quality based solely on its physicochemical properties?**
 
 We aim to build a binary classification model that distinguishes between high-quality wines (rated ≥7 out of 10) and lower-quality wines (rated <7) using features such as acidity, alcohol content, sulfur dioxide levels, and other measurable chemical properties.
 
-### Dataset Description
+## Dataset Description
 
 This analysis uses the Red Wine Quality dataset, which is publicly available from the UCI Machine Learning Repository. The dataset contains 1,599 samples of red Portuguese "Vinho Verde" wine, collected between 2004-2007. Each wine sample includes 11 physicochemical features and a quality score.
 
@@ -47,7 +51,7 @@ This analysis uses the Red Wine Quality dataset, which is publicly available fro
 **Target Variable:**
 - Quality: Expert ratings on a scale from 0 (very bad) to 10 (excellent)
 
-## Methods & Results
+# Methods & Results
 
 We trained three classification models; Logistic Regression, Decision Tree, and Random Forest, to predict high versus low quality wines using 11 continuous features. The data was split 80/20 with stratification, with all features being standardised before model training. Due to the under-representation of high-quality wines in our data, we trained all models with balanced class weights to compensate for this limitation. Model performance was then evaluated using accuracy, precision, recall, F1 score, and ROC AUC, with the best performing model undergoing 5-fold cross-validation.
 
@@ -72,7 +76,7 @@ from sklearn.metrics import (
     confusion_matrix, classification_report, roc_curve, auc, roc_auc_score)
 ```
 
-## Data Reading and Validation
+# Data Reading and Validation
 
 ```{python}
 df = pd.read_csv("data/winequality-red.csv", sep=';')
@@ -270,7 +274,7 @@ X_test = test_df[feature_columns]
 y_test = test_df['quality_binary']
 ```
 
-## Exploratory Data Analysis
+# Exploratory Data Analysis
 
 ```{python}
 # Summary statistics of all features
@@ -339,7 +343,7 @@ X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 ```
 
-### Model Development and Training
+# Model Development and Training
 
 We trained three different classification algorithms to compare their performance:
 
@@ -431,19 +435,10 @@ print(f"  Std CV Accuracy: {cv_scores.std():.4f}")
 print(f"\nThis suggests our model generalizes well with consistent performance across folds.")
 ```
 
-## Discussion
+# Discussion
 
-Our results indicate that a small subset of physiochemical properties carry most of the predictive ability in the how the quality of wines are perceived. Intuitively, volatile acidity was negatively correlated to the quality of wine. Surprisingly, alcohol was positively correlated with our target, defying theory which suggests that high levels of alcohol can reduce the aromas of wine, thus making it less enjoyable to consumers (Ozturk and Anli 1). Further defying established research, sulphates were also positively correlated with wine quality, though modern techniques usually render these to have little effect on the flavour and smell of wine (Bakker et al. 1). The strong performance of the Random Forest Classifier on this data in comparison to the Logistic Regression and Decision Tree Classifier seems to suggest some non-linear relationships within the data.
+Our results indicate that a small subset of physiochemical properties carry most of the predictive ability in the how the quality of wines are perceived. Intuitively, volatile acidity was negatively correlated to the quality of wine. Surprisingly, alcohol was positively correlated with our target, defying theory which suggests that high levels of alcohol can reduce the aromas of wine, thus making it less enjoyable to consumers @ozturk2014. Further defying established research, sulphates were also positively correlated with wine quality, though modern techniques usually render these to have little effect on the flavour and smell of wine @bakker1998. The strong performance of the Random Forest Classifier on this data in comparison to the Logistic Regression and Decision Tree Classifier seems to suggest some non-linear relationships within the data.
 
-While the Random Forest Classifier obtained relatively impressive predictive ability on the test and cross-validation sets, there are several key limitations to the model. The dataset contained just under 1600 observations, with each of these belonging to the same grape and region. For these reasons, it is unlikely that the model would generalise well on a dataset containing a variety of red wines. Additionally, while the quality evaluations were produced by blind tastings from expert oenologists (Cortez et al. 6), these results are still highly subjective. Given these limitations, in future, the model must be validated on other external datasets to validate its robustness in predicting high quality red wines.
+While the Random Forest Classifier obtained relatively impressive predictive ability on the test and cross-validation sets, there are several key limitations to the model. The dataset contained just under 1600 observations, with each of these belonging to the same grape and region. For these reasons, it is unlikely that the model would generalise well on a dataset containing a variety of red wines. Additionally, while the quality evaluations were produced by blind tastings from expert oenologists @cortez2009modelling, these results are still highly subjective. Given these limitations, in future, the model must be validated on other external datasets to validate its robustness in predicting high quality red wines.
 
-## Works Cited
-
-Bakker, J., et al. “Effect of Sulphur Dioxide and Must Extraction on Colour, Phenolic Composition and Sensory Quality of Red Table Wine.” *Journal of the Science of Food and Agriculture*, vol. 78, no. 3, Nov. 1998, pp. 297–307, https://doi.org/10.1002/(SICI)1097-0010(199811)78:3%3C297::AID-JSFA117%3E3.0.CO;2-G.
-
-Cortez, Paulo, et al. “Modeling Wine Preferences by Data Mining from Physicochemical Properties.” *Decision Support Systems*, vol. 47, no. 4, Nov. 2009, pp. 547–553, https://doi.org/10.1016/j.dss.2009.05.016.
-
-Cortez, Paulo, et al. *Wine Quality*. UCI Machine Learning Repository, 2009, https://doi.org/10.24432/C56S3T.
-
-Ozturk, Burcu, and Ertan Anli. “Different Techniques for Reducing Alcohol Levels in Wine: A Review.” *BIO Web of Conferences*, vol. 3, 4 Nov. 2014, https://doi.org/10.1051/bioconf/20140302012.
-
+# References
