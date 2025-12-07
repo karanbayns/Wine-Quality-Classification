@@ -3,7 +3,7 @@ output:
   html_document: default
   pdf_document: default
 ---
-# Wine-Quality-Classification Analysis
+# Wine Quality Classification Analysis
 ## Contributors
 Aidan Hew
 
@@ -14,9 +14,13 @@ SHUHANG LI
 ## Project Summary
 Wine Quality Classification is a reproducible project for classifying different red wine based on the quality. This project aims to investigate whether physicochemical properties can reliably predict wine quality using classification, which includes exploratory data analysis, model training, testing, and result visualization. The goal is to help understand the key physicochemical features affecting wine quality and build a model with good performance and generalization.
 
-## How to reproduce the Data Analysis
+## Usage
+
+# Setup
 1. Clone the repository to your local machine
-2. Create the virtual environment by using the following command line (if your laptop uses MacOS):
+
+# Running the analysis
+1. Create the virtual environment by using the following command line (if your laptop uses MacOS):
 ```bash
 conda env create -f environment.yml
 conda activate wine-quality
@@ -26,7 +30,7 @@ If your laptop does not use MacOS, use the following command line:
 conda-lock install --name <environment_name>
 conda activate <environment_name>
 ```
-3. Run the following scripts in order:
+Run the following scripts in order:
 
     **Step 1: Download/Read Data (`read_csv.py`)**
     Reads the raw data and saves it to a local file.
@@ -91,7 +95,7 @@ conda activate <environment_name>
     * For `data_processing.py`, `eda.py`, and `analysis.py`, the `path_save` argument must be a **directory** (e.g., `data/processed/`), 
       because the filenames are hardcoded within the scripts.
 
-## The way to use the container image
+# Using the container image
 1. Since we provide the 'docker-compose.yml' file, use the command line 'docker compose up -d', it will create a container and you will see the similar result below.
 <img width="673" height="59" alt="截屏2025-11-29 上午11 47 18" src="https://github.com/user-attachments/assets/b27dd873-45ac-4a41-93d1-5342a636e271" />
 
@@ -104,7 +108,7 @@ conda activate <environment_name>
 4. The result of step 3 includes URL's. Click on the second URL to open the project in a JupyterLab.
 5. Now you can run the code to reproduce the anaylsis process.
 
-## The way to update container image
+# Updating the container image
 1. Stop and remove the original one by using `docker compose down`
 2. Pull the latest version of the images defined in `docker-compose.yml` by using `docker compose pull`
 3. Follow the process mentioned in the 'The way to use the container image', so that you can use the updated container image.
@@ -120,5 +124,5 @@ conda activate <environment_name>
   - vl-convert-python
   - pandera=0.27.0
 
-## Name of the license
+## License
 The project is licensed under the MIT License and CC BY-NC-ND 4.0 license. The detail is in LICENSE.md.
