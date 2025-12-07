@@ -35,13 +35,13 @@ Run the following scripts in order:
 **Step 1: Download/Read Data (`read_csv.py`)**
 Reads the raw data and saves it to a local file.
     
-    *Arguments*
+*Arguments*
     
-    * `path_read`: URL or path to the input CSV.
-    * `path_save`: **File path** (including filename) where the raw data should be saved.
-    * `--delim`: (Optional) Delimiter of the input file (default: `,`).
+* `path_read`: URL or path to the input CSV.
+* `path_save`: **File path** (including filename) where the raw data should be saved.
+* `--delim`: (Optional) Delimiter of the input file (default: `,`).
     
-    *Example*
+*Example*
     
     ```bash
     python src/read_csv.py <url_or_input_path> data/raw/raw_data.csv --delim ";"
@@ -50,12 +50,12 @@ Reads the raw data and saves it to a local file.
 **Step 2: Process Data (`data_processing.py`)**
 Validates data schema, handles outliers/missing values, and splits data into train/test sets.
     
-    *Arguments*
+*Arguments*
     
-    * `path_read`: Path to the raw input CSV.
-    * `path_save`: **Directory** where `train_data.csv` and `test_data.csv` will be saved.
+* `path_read`: Path to the raw input CSV.
+* `path_save`: **Directory** where `train_data.csv` and `test_data.csv` will be saved.
     
-    *Example*
+*Example*
     
     ```bash
     python src/data_processing.py data/raw/raw_data.csv data/processed/
@@ -64,12 +64,12 @@ Validates data schema, handles outliers/missing values, and splits data into tra
 **Step 3: Exploratory Data Analysis (EDA) (`eda.py`)**
 Generates summary statistics, correlation heatmaps, and distribution plots from train data
     
-    *Arguments*
+*Arguments*
     
-    * `path_read`: Path to the training data CSV.
-    * `path_save`: **Directory** where figures and tables will be saved.
+* `path_read`: Path to the training data CSV.
+* `path_save`: **Directory** where figures and tables will be saved.
     
-    *Example*
+*Example*
     
     ```bash
     python src/eda.py data/processed/train_data.csv results/figures/
@@ -78,22 +78,22 @@ Generates summary statistics, correlation heatmaps, and distribution plots from 
 **Step 4: Analysis (`analysis.py`)**
 Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs performance metrics and ROC curves.
     
-    *Arguments*
+*Arguments*
     
-    * `path_train`: Path to the train data CSV.
-    * `path_test`: Path to the test data CSV.
-    * `path_save`: **Directory** where the model results (CSV and PNG) will be saved.
+* `path_train`: Path to the train data CSV.
+* `path_test`: Path to the test data CSV.
+* `path_save`: **Directory** where the model results (CSV and PNG) will be saved.
     
-    *Example*
+*Example*
     
     ```bash
     python src/analysis.py data/processed/train_data.csv data/processed/test_data.csv results/models/
     ```
-    **Important Note on Output Paths!!**
+    
+**Important Note on Output Paths!!**
 
-    * For `read_csv.py`, the `path_save` argument must be a **full file path** (e.g., `data/data.csv`).
-    * For `data_processing.py`, `eda.py`, and `analysis.py`, the `path_save` argument must be a **directory** (e.g., `data/processed/`), 
-      because the filenames are hardcoded within the scripts.
+* For `read_csv.py`, the `path_save` argument must be a **full file path** (e.g., `data/data.csv`).
+* For `data_processing.py`, `eda.py`, and `analysis.py`, the `path_save` argument must be a **directory** (e.g., `data/processed/`), because the filenames are hardcoded within the scripts.
 
 ### Using the container image
 1. Since we provide the 'docker-compose.yml' file, use the command line 'docker compose up -d', it will create a container and you will see the similar result below.
