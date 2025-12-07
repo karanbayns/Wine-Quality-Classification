@@ -32,8 +32,8 @@ conda activate <environment_name>
 ```
 Run the following scripts in order:
 
-    **Step 1: Download/Read Data (`read_csv.py`)**
-    Reads the raw data and saves it to a local file.
+**Step 1: Download/Read Data (`read_csv.py`)**
+Reads the raw data and saves it to a local file.
     
     *Arguments*
     
@@ -47,8 +47,8 @@ Run the following scripts in order:
     python src/read_csv.py <url_or_input_path> data/raw/raw_data.csv --delim ";"
     ```
 
-    **Step 2: Process Data (`data_processing.py`)**
-    Validates data schema, handles outliers/missing values, and splits data into train/test sets.
+**Step 2: Process Data (`data_processing.py`)**
+Validates data schema, handles outliers/missing values, and splits data into train/test sets.
     
     *Arguments*
     
@@ -61,8 +61,8 @@ Run the following scripts in order:
     python src/data_processing.py data/raw/raw_data.csv data/processed/
     ```
 
-    **Step 3: Exploratory Data Analysis (EDA) (`eda.py`)**
-    Generates summary statistics, correlation heatmaps, and distribution plots from train data
+**Step 3: Exploratory Data Analysis (EDA) (`eda.py`)**
+Generates summary statistics, correlation heatmaps, and distribution plots from train data
     
     *Arguments*
     
@@ -75,8 +75,8 @@ Run the following scripts in order:
     python src/eda.py data/processed/train_data.csv results/figures/
     ```
 
-    **Step 4: Analysis (`analysis.py`)**
-    Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs performance metrics and ROC curves.
+**Step 4: Analysis (`analysis.py`)**
+Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs performance metrics and ROC curves.
     
     *Arguments*
     
