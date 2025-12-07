@@ -9,15 +9,14 @@ format:
         toc-depth: 2
 bibliography:
     wine-quality.bib
+execute:
+  echo: false      
+  fig-width: 6      
+  fig-height: 4  
 ---
 
 
 **Authors:** Aidan Hew, Karan Bains, Shuhang Li
-
-
-# Summary
-
-This analysis investigates whether physicochemical properties (eg. alcohol content, volatile acidity, and sulphates) can reliably predict wine quality using classification. Using a dataset of 1,599 red Portuguese "Vinho Verde" wines [@cortez2009data], we developed models to distinguish between high-quality wines (rated 7 or higher) and lower-quality wines (rated below 7). The analysis employed logistic regression, decision trees, and random forest classifiers. Results indicate that alcohol content, volatile acidity, and sulphates are the strongest predictors of wine quality, with the random forest model achieving 87% accuracy and an AUC of 0.91. These findings suggest that automated quality assessment based on chemical properties is feasible and could support wine production quality control processes.
 
 # Introduction
 
@@ -33,7 +32,7 @@ We aim to build a binary classification model that distinguishes between high-qu
 
 ## Dataset Description
 
-This analysis uses the Red Wine Quality dataset, which is publicly available from the UCI Machine Learning Repository. The dataset contains 1,599 samples of red Portuguese "Vinho Verde" wine, collected between 2004-2007. Each wine sample includes 11 physicochemical features and a quality score.
+This analysis uses the Red Wine Quality dataset, which is publicly available from the UCI Machine Learning Repository. The dataset contains 1599 samples of red Portuguese "Vinho Verde" wine, collected between 2004-2007. Each wine sample includes 11 physicochemical features and a quality score.
 
 **Features:**
 - Fixed acidity (g/L): Non-volatile acids (tartaric acid)
@@ -51,11 +50,10 @@ This analysis uses the Red Wine Quality dataset, which is publicly available fro
 **Target Variable:**
 - Quality: Expert ratings on a scale from 0 (very bad) to 10 (excellent)
 
-# Methods & Results
+# Methods
 
-We trained three classification models; Logistic Regression, Decision Tree, and Random Forest, to predict high versus low quality wines using 11 continuous features. The data was split 80/20 with stratification, with all features being standardised before model training. Due to the under-representation of high-quality wines in our data, we trained all models with balanced class weights to compensate for this limitation. Model performance was then evaluated using accuracy, precision, recall, F1 score, and ROC AUC, with the best performing model undergoing 5-fold cross-validation.
+We trained three classification models; Logistic Regression, Decision Tree, and Random Forest, to predict high versus low quality wines. The data was split 80/20 with stratification, with all features being standardised before model training. Due to the under-representation of high-quality wines in our data, we trained all models with balanced class weights to compensate for this limitation. Model performance was then evaluated using accuracy, precision, recall, F1 score, and ROC AUC, with the best performing model undergoing 5-fold cross-validation.
 
-The Random Forest Classifier performed the strongest across all metrics, achieving 88% test accuracy as well as an ROC AUC of 0.92. Cross-validation confirmed this result, with a mean accuracy of 0.885 and relatively low variance across folds. This suggests that the model will generalise well, and indicates potential non-linear relationships in the data due to its superiority over the Logistic Regression and Decision Tree models.
 
 ```{python}
 import pandas as pd
@@ -79,8 +77,12 @@ from sklearn.metrics import (
 # Data Reading and Validation
 
 ```{python}
-df = pd.read_csv("data/winequality-red.csv", sep=';')
+#| label: tbl-wine-quality-data
+#| tbl-cap: "The red wine data"
+#| tbl-cap-location: bottom
 
+df = pd.read_csv("data/winequality-red.csv", sep=';')
+length = len(df)
 # Create binary target variable for quality>=7 and quality<7
 df['quality_binary'] = (df['quality'] >= 7)
 
@@ -116,6 +118,7 @@ def feature_corr_check(df):
     upper = np.triu(corr, k = 1)
     return np.abs(upper).max() < 0.95
 ```
+
 
 ```{python}
 # Build schema
@@ -277,12 +280,22 @@ y_test = test_df['quality_binary']
 # Exploratory Data Analysis
 
 ```{python}
+#| label: tbl-feature-summary
+#| tbl-cap: "Summary statistics for physicochemical features"
+#| tbl-cap-location: bottom
+
 # Summary statistics of all features
-print("Summary statistics for physicochemical features:")
+#print("Summary statistics for physicochemical features:")
 train_df[feature_columns].describe().round(3)
 ```
 
 ```{python}
+#| label: fig-corr_heatmap
+#| fig-cap: "Correlation among features"
+#| fig-width: 6
+#| fig-height: 4
+#| out-width: 70%
+
 # Create correlation data frame in long format
 corr_df = pd.concat([X_train, y_train], axis=1).corr('spearman').stack().reset_index()
 corr_df.columns = ['feature_1', 'feature_2', 'correlation']
@@ -303,6 +316,12 @@ corr_heatmap
 ```
 
 ```{python}
+#| label: fig-feature_dists
+#| fig-cap: "Distributions of features by wine quality"
+#| fig-width: 7
+#| fig-height: 3.5
+#| out-width: 80%
+
 # Isolate target and correlates
 dist_feats = ['quality_binary', 'alcohol', 'sulphates', 'volatile acidity']
 
@@ -334,7 +353,7 @@ feature_hists = alt.Chart(dist_df).mark_bar(opacity = 0.5).encode(
 feature_hists
 ```
 
-Our EDA showed only a few features that displayed meaningful relationships with the quality of wine. In particular, alcohol, sulphates, and volatile acidity exhibited the strongest correlations with our target. High-quality wines were associated with higher alcohol and sulphate levels but lower volatile acidity. The histograms helped to demonstrate this separation in distribution of high and low-quality wines for these features. Finally, the dataset contained a notable imbalance, with relatively few high-quality wines, implying the need for class balancing in the later modelling stages.
+@fig-corr_heatmap showed only a few features that displayed meaningful relationships with the quality of wine. In particular, alcohol, sulphates, and volatile acidity exhibited the strongest correlations with our target. High-quality wines were associated with higher alcohol and sulphate levels but lower volatile acidity. The @fig-feature_dists helped to demonstrate this separation in distribution of high and low-quality wines for these features. Finally, the dataset contained a notable imbalance, with relatively few high-quality wines, implying the need for class balancing in the later modelling stages.
 
 ```{python}
 # Scale features
@@ -403,7 +422,7 @@ for name, model in models.items():
     recall = recall_score(y_test, y_test_pred)
     f1 = f1_score(y_test, y_test_pred)
     roc_auc = roc_auc_score(y_test, y_test_proba)
-    
+
     # Store results
     results.append({
         'Model': name,
@@ -421,24 +440,41 @@ for name, model in models.items():
     print(f"  Recall: {recall:.4f}")
     print(f"  F1 Score: {f1:.4f}")
     print(f"  ROC AUC: {roc_auc:.4f}")
+rf_test_acc = results[-1]['Test Accuracy']
+rf_auc = results[-1]['ROC AUC']
+
+rf_test_acc = f"{rf_test_acc:.2%}" 
+rf_auc = f"{rf_auc:.2f}"    
 ```
 
 ```{python}
 # Perform 5-fold cross-validation on the best model
 best_model = trained_models['Random Forest']
 cv_scores = cross_val_score(best_model, X_train_scaled, y_train, cv=5, scoring='accuracy')
-
+cv_mean = cv_scores.mean()
 print("5-Fold Cross-Validation Results (Random Forest):")
 print(f"  Fold accuracies: {[f'{score:.4f}' for score in cv_scores]}")
 print(f"  Mean CV Accuracy: {cv_scores.mean():.4f}")
 print(f"  Std CV Accuracy: {cv_scores.std():.4f}")
 print(f"\nThis suggests our model generalizes well with consistent performance across folds.")
+cv_mean = cv_scores.mean()  
+
+cv_mean = f"{cv_mean:.3f}" 
 ```
+
+# Results
+
+The Random Forest Classifier performed the strongest across all metrics, achieving `{python} rf_test_acc` test accuracy as well as an ROC AUC of `{python} rf_auc`. Cross-validation confirmed this result, with a mean accuracy of `{python} cv_mean` and relatively low variance across folds. This suggests that the model will generalise well, and indicates potential non-linear relationships in the data due to its superiority over the Logistic Regression and Decision Tree models.
+
+# Summary
+
+This analysis investigates whether physicochemical properties (eg. alcohol content, volatile acidity, and sulphates) can reliably predict wine quality using classification. Using a dataset of `{python} length` red Portuguese "Vinho Verde" wines [@cortez2009data], we developed models to distinguish between high-quality wines (rated 7 or higher) and lower-quality wines (rated below 7). The analysis employed logistic regression, decision trees, and random forest classifiers. Results indicate that alcohol content, volatile acidity, and sulphates are the strongest predictors of wine quality, with the random forest model achieving `{python} rf_test_acc` accuracy and an AUC of `{python} rf_auc`. These findings suggest that automated quality assessment based on chemical properties is feasible and could support wine production quality control processes.
 
 # Discussion
 
 Our results indicate that a small subset of physiochemical properties carry most of the predictive ability in the how the quality of wines are perceived. Intuitively, volatile acidity was negatively correlated to the quality of wine. Surprisingly, alcohol was positively correlated with our target, defying theory which suggests that high levels of alcohol can reduce the aromas of wine, thus making it less enjoyable to consumers [@ozturk2014]. Further defying established research, sulphates were also positively correlated with wine quality, though modern techniques usually render these to have little effect on the flavour and smell of wine [@bakker1998]. The strong performance of the Random Forest Classifier on this data in comparison to the Logistic Regression and Decision Tree Classifier seems to suggest some non-linear relationships within the data.
 
-While the Random Forest Classifier obtained relatively impressive predictive ability on the test and cross-validation sets, there are several key limitations to the model. The dataset contained just under 1600 observations, with each of these belonging to the same grape and region. For these reasons, it is unlikely that the model would generalise well on a dataset containing a variety of red wines. Additionally, while the quality evaluations were produced by blind tastings from expert oenologists [@cortez2009modelling], these results are still highly subjective. Given these limitations, in future, the model must be validated on other external datasets to validate its robustness in predicting high quality red wines.
+While the Random Forest Classifier obtained relatively impressive predictive ability on the test and cross-validation sets, there are several key limitations to the model. The dataset contained just under `{python} length` observations, with each of these belonging to the same grape and region. For these reasons, it is unlikely that the model would generalise well on a dataset containing a variety of red wines. Additionally, while the quality evaluations were produced by blind tastings from expert oenologists [@cortez2009modelling], these results are still highly subjective. Given these limitations, in future, the model must be validated on other external datasets to validate its robustness in predicting high quality red wines.
+
 
 # References
