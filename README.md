@@ -101,24 +101,24 @@ conda activate <environment_name>
 3. Use the command line 'docker logs wine-quality-classification-analysis-env-1' ('wine-quality-classification-analysis-env-1' is the name of the container can be find in the 'docker ps' result)
 <img width="706" height="77" alt="截屏2025-11-29 上午11 50 19" src="https://github.com/user-attachments/assets/66c20388-559c-460e-ad37-51e67b87e337" />
 
-4. The result of step3 include URLs, use the second one, and open it in the broswer, and you will see the whole project opend in the Jupyter Lab.
+4. The result of step 3 includes URL's. Click on the second URL to open the project in a JupyterLab.
 5. Now you can run the code to reproduce the anaylsis process.
 
 ## The way to update container image
-1. Stop and remove the original one by using 'docker compose down'
-2. Pull the latest version of the images defined in `docker-compose.yml` by using 'docker compose pull'
-3. And just follow the process we mentioned in the 'The way to use the container image' so that you can use the updated container image.
-
-
+1. Stop and remove the original one by using `docker compose down`
+2. Pull the latest version of the images defined in `docker-compose.yml` by using `docker compose pull`
+3. Follow the process mentioned in the 'The way to use the container image', so that you can use the updated container image.
 
 ## Dependencies
-  - pandas
-  - scikit-learn
-  - jupyter
+  - click
+  - pandas=2.2.2
+  - scikit-learn=1.4.2
+  - jupyter=1.1.1
   - python=3
-  - numpy
-  - matplotlib
-  - altair
+  - numpy=1.26.4
+  - altair=6.0.0
+  - vl-convert-python
+  - pandera=0.27.0
 
 ## Name of the license
 The project is licensed under the MIT License and CC BY-NC-ND 4.0 license. The detail is in LICENSE.md.
