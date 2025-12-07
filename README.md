@@ -16,10 +16,10 @@ Wine Quality Classification is a reproducible project for classifying different 
 
 ## Usage
 
-# Setup
+### Setup
 1. Clone the repository to your local machine
 
-# Running the analysis
+### Running the analysis
 1. Create the virtual environment by using the following command line (if your laptop uses MacOS):
 ```bash
 conda env create -f environment.yml
@@ -95,7 +95,7 @@ Run the following scripts in order:
     * For `data_processing.py`, `eda.py`, and `analysis.py`, the `path_save` argument must be a **directory** (e.g., `data/processed/`), 
       because the filenames are hardcoded within the scripts.
 
-# Using the container image
+### Using the container image
 1. Since we provide the 'docker-compose.yml' file, use the command line 'docker compose up -d', it will create a container and you will see the similar result below.
 <img width="673" height="59" alt="截屏2025-11-29 上午11 47 18" src="https://github.com/user-attachments/assets/b27dd873-45ac-4a41-93d1-5342a636e271" />
 
@@ -108,7 +108,7 @@ Run the following scripts in order:
 4. The result of step 3 includes URL's. Click on the second URL to open the project in a JupyterLab.
 5. Now you can run the code to reproduce the anaylsis process.
 
-# Updating the container image
+### Updating the container image
 1. Stop and remove the original one by using `docker compose down`
 2. Pull the latest version of the images defined in `docker-compose.yml` by using `docker compose pull`
 3. Follow the process mentioned in the 'The way to use the container image', so that you can use the updated container image.
