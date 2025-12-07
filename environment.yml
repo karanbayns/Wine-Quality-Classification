@@ -3,12 +3,13 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - click
+  - click=8.3.1
   - pandas=2.2.2
   - scikit-learn=1.4.2
   - jupyter=1.1.1
   - python=3
   - numpy=1.26.4
   - altair=6.0.0
-  - vl-convert-python
+  - vl-convert-python=1.8.0
   - pandera=0.27.0
+  - matplotlib=3.10.8

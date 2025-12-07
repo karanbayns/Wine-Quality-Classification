@@ -3,10 +3,10 @@ title: 'Predicting Wine Quality: A Binary Classification Approach Using Physicoc
 format:
     html:
         toc: true
-        toc-depth: 2
+        toc-depth: 3
     pdf:
         toc: true
-        toc-depth: 2
+        toc-depth: 3
 bibliography:
     wine-quality.bib
 execute:
@@ -57,224 +57,8 @@ We trained three classification models; Logistic Regression, Decision Tree, and 
 
 ```{python}
 import pandas as pd
-import numpy as np
-import altair as alt
-import pandera.pandas as pa
-import json
-import logging
-from scipy.stats import kstest, norm
-from pandera import extensions
-from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import (
-    accuracy_score, precision_score, recall_score, f1_score,
-    confusion_matrix, classification_report, roc_curve, auc, roc_auc_score)
-```
-
-# Data Reading and Validation
-
-```{python}
-#| label: tbl-wine-quality-data
-#| tbl-cap: "The red wine data"
-#| tbl-cap-location: bottom
-
-df = pd.read_csv("data/winequality-red.csv", sep=';')
-length = len(df)
-# Create binary target variable for quality>=7 and quality<7
-df['quality_binary'] = (df['quality'] >= 7)
-
-# View df to check for meaningful column names
-df
-```
-
-```{python}
-# Register custom checks
-@extensions.register_check_method(statistics = ['iqr_mult'])
-def outlier_check(df, iqr_mult = 3):
-    q1 = df.quantile(0.25)
-    q3 = df.quantile(0.75)
-    iqr = q3 - q1
-    lower = q1 - iqr_mult * iqr
-    upper = q3 + iqr_mult * iqr
-    return (df >= lower) & (df <= upper)
-
-@extensions.register_check_method()
-def dist_check(df):
-    z = (df - df.mean()) / df.std()
-    stat, p = kstest(z, 'norm')
-    return p > 0.05
-
-@extensions.register_check_method()
-def target_corr_check(df):
-    corr = df.corr(numeric_only = True)['quality_binary'].drop('quality_binary')
-    return corr.abs().max() < 0.95
-
-@extensions.register_check_method()
-def feature_corr_check(df):
-    corr = df.drop(columns = 'quality_binary').corr(numeric_only = True)
-    upper = np.triu(corr, k = 1)
-    return np.abs(upper).max() < 0.95
-```
-
-
-```{python}
-# Build schema
-# Used pa.Check.outlier_check() to check outliers in numerical features
-# nullable = False to check for null values
-schema = pa.DataFrameSchema(
-    {
-        'fixed acidity': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'volatile acidity': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'citric acid': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'residual sugar': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'chlorides': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'free sulfur dioxide': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'total sulfur dioxide': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'density': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'pH': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'sulphates': pa.Column(float, pa.Check.outlier_check(),nullable = False),
-        'alcohol': pa.Column(float, pa.Check.outlier_check(),nullable = False),      
-        'quality': pa.Column(int, checks = [pa.Check.between(0, 10), pa.Check.dist_check()],nullable = False),
-        'quality_binary': pa.Column(bool, nullable = False)
-    },
-    checks = [ # Check duplicate rows
-        pa.Check(lambda df: ~df.duplicated().any(), element_wise = False, error = 'Duplicate rows detected.')
-    ],
-    drop_invalid_rows = False
-)
-```
-
-```{python}
-# Create a function to validate data and handle errors
-def val_data_handle_error(df, schema):
-    """
-    Validate a DataFrame against a Pandera schema and remove invalid rows.
-    
-    This function validates the input DataFrame using the provided Pandera schema.
-    If validation errors occur, invalid rows are filtered out and the cleaned
-    DataFrame is returned. Validation errors are logged as JSON for debugging.
-    
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        The DataFrame to validate.
-    schema : pandera.DataFrameSchema
-        The Pandera schema defining validation rules for the DataFrame.
-    
-    Returns
-    -------
-    pandas.DataFrame
-        The validated DataFrame with invalid rows removed, duplicates dropped,
-        missing values removed, and index reset. If no validation errors occur,
-        returns the original DataFrame unchanged.
-    
-    Raises
-    ------
-    None
-        This function catches SchemaErrors internally and does not raise exceptions.
-    
-    Notes
-    -----
-    - Validation is performed lazily to collect all errors at once.
-    - Invalid rows are identified by their index and removed from the DataFrame.
-    - The returned DataFrame has duplicates removed and all rows with any
-      missing values dropped.
-    - Validation errors are logged in JSON format for easier parsing.
-    
-    Examples
-    --------
-    >>> import pandas as pd
-    >>> import pandera as pa
-    >>> schema = pa.DataFrameSchema({"col1": pa.Column(int, pa.Check.between(0, 10))})
-    >>> df = pd.DataFrame({"col1": [1, -1, 2]})
-    >>> validated_df = val_data_handle_error(df, schema)
-    >>> validated_df
-       col1
-    0     1
-    1     2
-    """
-    error_cases = None
-    try:
-        schema.validate(df, lazy = True)
-    except pa.errors.SchemaErrors as e:
-        error_cases = e.failure_cases
-    
-        # Convert the error message to a JSON string
-        error_message = json.dumps(e.message, indent = 2)
-        logging.error('\n' + error_message)
-    
-    # Filter out invalid rows based on the error cases
-    if error_cases is not None and not error_cases.empty:
-        invalid_indices = error_cases['index'].dropna().unique()
-        return (df.drop(index = invalid_indices)
-               .reset_index(drop = True)
-               .drop_duplicates()
-               .dropna(how = 'all'))
-    else:
-        return df
-```
-
-## Data Splitting
-
-```{python}
-# Validate the entire dataset for checks with no potential risk of data leakage
-validated_df = val_data_handle_error(df, schema)
-
-# Separate features and target
-feature_columns = ['fixed acidity', 'volatile acidity', 'citric acid', 'residual sugar',
-                   'chlorides', 'free sulfur dioxide', 'total sulfur dioxide', 'density',
-                   'pH', 'sulphates', 'alcohol']
-
-X = validated_df[feature_columns]
-y = validated_df['quality_binary']
-
-# Split into train and test
-train_df, test_df = train_test_split(
-    validated_df, test_size = 0.2, random_state = 2025, stratify = validated_df['quality_binary']
-)
-```
-
-## Further Data Validation
-
-```{python}
-# Build schema to check correlations between features and target in train_df
-schema_corr = pa.DataFrameSchema(
-    {
-        'fixed acidity': pa.Column(float),
-        'volatile acidity': pa.Column(float),
-        'citric acid': pa.Column(float),
-        'residual sugar': pa.Column(float),
-        'chlorides': pa.Column(float),
-        'free sulfur dioxide': pa.Column(float),
-        'total sulfur dioxide': pa.Column(float),
-        'density': pa.Column(float),
-        'pH': pa.Column(float),
-        'sulphates': pa.Column(float),
-        'alcohol': pa.Column(float),
-        'quality':          pa.Column(int),
-        'quality_binary':   pa.Column(bool)
-    },
-    checks = [
-        pa.Check.target_corr_check(),
-        pa.Check.feature_corr_check()
-    ],
-    drop_invalid_rows = False
-)
-```
-
-```{python}
-# Validate the training data for any anomalous correlations between features and target
-train_df = val_data_handle_error(train_df, schema_corr)
-
-# Split into X and y
-X_train = train_df[feature_columns]
-y_train = train_df['quality_binary']
-
-X_test = test_df[feature_columns]
-y_test = test_df['quality_binary']
+from IPython.display import Markdown, display
+from tabulate import tabulate
 ```
 
 # Exploratory Data Analysis
@@ -284,83 +68,18 @@ y_test = test_df['quality_binary']
 #| tbl-cap: "Summary statistics for physicochemical features"
 #| tbl-cap-location: bottom
 
+raw_data = pd.read_csv('./data/raw/raw_data.csv')
+
 # Summary statistics of all features
-#print("Summary statistics for physicochemical features:")
-train_df[feature_columns].describe().round(3)
+data_summary = pd.read_csv('results/figures/summary_table.csv')
+Markdown(data_summary.to_markdown(index = False))
 ```
 
-```{python}
-#| label: fig-corr_heatmap
-#| fig-cap: "Correlation among features"
-#| fig-width: 6
-#| fig-height: 4
-#| out-width: 70%
+![Correlation among features.](./results/figures/eda_heatmap.png){#fig-corr_heatmap width=70%}
 
-# Create correlation data frame in long format
-corr_df = pd.concat([X_train, y_train], axis=1).corr('spearman').stack().reset_index()
-corr_df.columns = ['feature_1', 'feature_2', 'correlation']
-corr_df.loc[corr_df['correlation'] == 1, 'correlation'] = 0 # Remove diagonal
-
-# Create correlation heatmap
-corr_heatmap = alt.Chart(
-    corr_df,
-    title = 'Wine Quality Correlation Heatmap').mark_rect().encode(
-    x = alt.X('feature_1').title('Feature 1'),
-    y = alt.Y('feature_2').title('Feature 2'),
-    color = alt.Color('correlation').scale(scheme = 'blueorange', domain = (-1, 1)).title('Correlation'),
-    tooltip = alt.Tooltip('correlation:Q', format = '.2f')
-)
-
-# Display correlation heatmap
-corr_heatmap
-```
-
-```{python}
-#| label: fig-feature_dists
-#| fig-cap: "Distributions of features by wine quality"
-#| fig-width: 7
-#| fig-height: 3.5
-#| out-width: 80%
-
-# Isolate target and correlates
-dist_feats = ['quality_binary', 'alcohol', 'sulphates', 'volatile acidity']
-
-# Create density data frame
-dist_df = pd.concat([X_train, y_train], axis=1)
-dist_df = dist_df[dist_feats]
-
-# Replace boolean with descriptive strings
-dist_df['quality_binary'] = dist_df['quality_binary'].map({
-    True: 'High Quality Wine',
-    False: 'Low Quality Wine'
-})
-
-# Create overlaid histograms for each correlated feature
-feature_hists = alt.Chart(dist_df).mark_bar(opacity = 0.5).encode(
-    x = alt.X(alt.repeat('column')).type('quantitative').bin(maxbins = 25).axis(format = '.1f'),
-    y = alt.Y('count()').stack(False),
-    color = alt.Color('quality_binary:N').title('Wine Quality')
-).properties(
-    width = 250,
-    height = 200,
-).repeat(
-    column = ['alcohol', 'sulphates', 'volatile acidity']
-).resolve_scale(
-    y = 'shared'
-)
-
-# Display histograms
-feature_hists
-```
+![Distributions of features by wine quality](./results/figures/eda_hists.png){#fig-feature_dists width=80%}
 
 @fig-corr_heatmap showed only a few features that displayed meaningful relationships with the quality of wine. In particular, alcohol, sulphates, and volatile acidity exhibited the strongest correlations with our target. High-quality wines were associated with higher alcohol and sulphate levels but lower volatile acidity. The @fig-feature_dists helped to demonstrate this separation in distribution of high and low-quality wines for these features. Finally, the dataset contained a notable imbalance, with relatively few high-quality wines, implying the need for class balancing in the later modelling stages.
-
-```{python}
-# Scale features
-scaler = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)
-X_test_scaled = scaler.transform(X_test)
-```
 
 # Model Development and Training
 
@@ -374,107 +93,29 @@ We trained three different classification algorithms to compare their performanc
 
 All models use class weighting (balanced) to account for the imbalanced class distribution, giving more importance to the minority class (high-quality wines).
 
-```{python}
-# Initialize models with class balancing
-models = {
-    'Logistic Regression': LogisticRegression(
-        random_state=123, 
-        max_iter=1000, 
-        class_weight='balanced'
-    ),
-    'Decision Tree': DecisionTreeClassifier(
-        random_state=123, 
-        max_depth=10, 
-        min_samples_split=20,
-        min_samples_leaf=10,
-        class_weight='balanced'
-    ),
-    'Random Forest': RandomForestClassifier(
-        n_estimators=100, 
-        random_state=123, 
-        max_depth=15,
-        min_samples_split=10,
-        min_samples_leaf=5,
-        class_weight='balanced'
-    )
-}
-
-# Train models and store results
-trained_models = {}
-results = []
-
-for name, model in models.items():
-    print(f"\nTraining {name}...")
-    
-    # Train the model
-    model.fit(X_train_scaled, y_train)
-    trained_models[name] = model
-    
-    # Make predictions
-    y_train_pred = model.predict(X_train_scaled)
-    y_test_pred = model.predict(X_test_scaled)
-    y_test_proba = model.predict_proba(X_test_scaled)[:, 1]
-    
-    # Calculate metrics
-    train_acc = accuracy_score(y_train, y_train_pred)
-    test_acc = accuracy_score(y_test, y_test_pred)
-    precision = precision_score(y_test, y_test_pred)
-    recall = recall_score(y_test, y_test_pred)
-    f1 = f1_score(y_test, y_test_pred)
-    roc_auc = roc_auc_score(y_test, y_test_proba)
-
-    # Store results
-    results.append({
-        'Model': name,
-        'Train Accuracy': train_acc,
-        'Test Accuracy': test_acc,
-        'Precision': precision,
-        'Recall': recall,
-        'F1 Score': f1,
-        'ROC AUC': roc_auc
-    })
-    
-    print(f"  Train Accuracy: {train_acc:.4f}")
-    print(f"  Test Accuracy: {test_acc:.4f}")
-    print(f"  Precision: {precision:.4f}")
-    print(f"  Recall: {recall:.4f}")
-    print(f"  F1 Score: {f1:.4f}")
-    print(f"  ROC AUC: {roc_auc:.4f}")
-rf_test_acc = results[-1]['Test Accuracy']
-rf_auc = results[-1]['ROC AUC']
-
-rf_test_acc = f"{rf_test_acc:.2%}" 
-rf_auc = f"{rf_auc:.2f}"    
-```
-
-```{python}
-# Perform 5-fold cross-validation on the best model
-best_model = trained_models['Random Forest']
-cv_scores = cross_val_score(best_model, X_train_scaled, y_train, cv=5, scoring='accuracy')
-cv_mean = cv_scores.mean()
-print("5-Fold Cross-Validation Results (Random Forest):")
-print(f"  Fold accuracies: {[f'{score:.4f}' for score in cv_scores]}")
-print(f"  Mean CV Accuracy: {cv_scores.mean():.4f}")
-print(f"  Std CV Accuracy: {cv_scores.std():.4f}")
-print(f"\nThis suggests our model generalizes well with consistent performance across folds.")
-cv_mean = cv_scores.mean()  
-
-cv_mean = f"{cv_mean:.3f}" 
-```
+![ROC Curves for Binary Wine Quality Classification](./results/models/roc_curves.png){#fig-ROC_curve width=80%}
 
 # Results
 
-The Random Forest Classifier performed the strongest across all metrics, achieving `{python} rf_test_acc` test accuracy as well as an ROC AUC of `{python} rf_auc`. Cross-validation confirmed this result, with a mean accuracy of `{python} cv_mean` and relatively low variance across folds. This suggests that the model will generalise well, and indicates potential non-linear relationships in the data due to its superiority over the Logistic Regression and Decision Tree models.
+```{python}
+#| label: tbl-model-metrics
+#| tbl-cap: "Performance metrics for each evaluated model"
+#| tbl-cap-location: bottom
+
+model_metrics = pd.read_csv('./results/models/model_performance_metrics.csv')
+Markdown(model_metrics.to_markdown(index = False))
+```
+
+The Random Forest Classifier performed the strongest across all metrics, achieving `{python} round(model_metrics.loc[model_metrics['Model'] == 'Random Forest', 'Test Accuracy'].iloc[0], 3)` test accuracy as well as an ROC AUC of `{python} round(model_metrics.loc[model_metrics['Model'] == 'Random Forest', 'ROC AUC'].iloc[0], 3)`. Cross-validation confirmed this result, with a mean accuracy of 0.874 and relatively low variance across folds. This suggests that the model will generalise well, and indicates potential non-linear relationships in the data due to its superiority over the Logistic Regression and Decision Tree models.
 
 # Summary
 
-This analysis investigates whether physicochemical properties (eg. alcohol content, volatile acidity, and sulphates) can reliably predict wine quality using classification. Using a dataset of `{python} length` red Portuguese "Vinho Verde" wines [@cortez2009data], we developed models to distinguish between high-quality wines (rated 7 or higher) and lower-quality wines (rated below 7). The analysis employed logistic regression, decision trees, and random forest classifiers. Results indicate that alcohol content, volatile acidity, and sulphates are the strongest predictors of wine quality, with the random forest model achieving `{python} rf_test_acc` accuracy and an AUC of `{python} rf_auc`. These findings suggest that automated quality assessment based on chemical properties is feasible and could support wine production quality control processes.
+This analysis investigates whether physicochemical properties (eg. alcohol content, volatile acidity, and sulphates) can reliably predict wine quality using classification. Using a dataset of `{python} len(raw_data)` red Portuguese "Vinho Verde" wines [@cortez2009data], we developed models to distinguish between high-quality wines (rated 7 or higher) and lower-quality wines (rated below 7). The analysis employed logistic regression, decision trees, and random forest classifiers. Results indicate that alcohol content, volatile acidity, and sulphates are the strongest predictors of wine quality, with the random forest model achieving `{python} round(model_metrics.loc[model_metrics['Model'] == 'Random Forest', 'Test Accuracy'].iloc[0], 3)` accuracy and an AUC of `{python} round(model_metrics.loc[model_metrics['Model'] == 'Random Forest', 'ROC AUC'].iloc[0], 3)`. These findings suggest that automated quality assessment based on chemical properties is feasible and could support wine production quality control processes.
 
 # Discussion
 
 Our results indicate that a small subset of physiochemical properties carry most of the predictive ability in the how the quality of wines are perceived. Intuitively, volatile acidity was negatively correlated to the quality of wine. Surprisingly, alcohol was positively correlated with our target, defying theory which suggests that high levels of alcohol can reduce the aromas of wine, thus making it less enjoyable to consumers [@ozturk2014]. Further defying established research, sulphates were also positively correlated with wine quality, though modern techniques usually render these to have little effect on the flavour and smell of wine [@bakker1998]. The strong performance of the Random Forest Classifier on this data in comparison to the Logistic Regression and Decision Tree Classifier seems to suggest some non-linear relationships within the data.
 
-While the Random Forest Classifier obtained relatively impressive predictive ability on the test and cross-validation sets, there are several key limitations to the model. The dataset contained just under `{python} length` observations, with each of these belonging to the same grape and region. For these reasons, it is unlikely that the model would generalise well on a dataset containing a variety of red wines. Additionally, while the quality evaluations were produced by blind tastings from expert oenologists [@cortez2009modelling], these results are still highly subjective. Given these limitations, in future, the model must be validated on other external datasets to validate its robustness in predicting high quality red wines.
-
+While the Random Forest Classifier obtained relatively impressive predictive ability on the test and cross-validation sets, there are several key limitations to the model. The dataset contained just under `{python} len(raw_data)` observations, with each of these belonging to the same grape and region. For these reasons, it is unlikely that the model would generalise well on a dataset containing a variety of red wines. Additionally, while the quality evaluations were produced by blind tastings from expert oenologists [@cortez2009modelling], these results are still highly subjective. Given these limitations, in future, the model must be validated on other external datasets to validate its robustness in predicting high quality red wines.
 
 # References
