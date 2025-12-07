@@ -12,7 +12,7 @@ Karan Bains
 SHUHANG LI
 
 ## Project Summary
-Wine Quality Classification is a reproduciable project for classifying different red wine based on the quality. This project aims to investigate whether physicochemical properties can reliably predict wine quality using classification, which includes exploratory data analysis , model training, testing, and result visualization. The goal is to help understand the key physicochemical features affecting wine quality and build a model with good performance and generization.
+Wine Quality Classification is a reproducible project for classifying different red wine based on the quality. This project aims to investigate whether physicochemical properties can reliably predict wine quality using classification, which includes exploratory data analysis, model training, testing, and result visualization. The goal is to help understand the key physicochemical features affecting wine quality and build a model with good performance and generalization.
 
 ## How to reproduce the Data Analysis
 1. Clone the repository to your local machine
