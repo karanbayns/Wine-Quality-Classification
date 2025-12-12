@@ -1,8 +1,8 @@
 import pandas as pd
+import sys
+import os
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
-import sys
-from pathlib import Path
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
@@ -12,8 +12,7 @@ from sklearn.metrics import (
 )
 from sklearn.metrics import roc_curve, auc
 
-ROOT = Path(__file__).resolve().parents[1]
-sys.path.append(str(ROOT))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from src.train_evaluate_models import train_evaluate_models
 
