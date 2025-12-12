@@ -10,7 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score, precision_score, recall_score, f1_score,
     confusion_matrix, classification_report, roc_curve, auc, roc_auc_score)
-
+from src.train_evaluate_models import train_evaluate_models
 @click.command()
 @click.argument('path_train', type = str)
 @click.argument('path_test', type = str)
@@ -61,37 +61,7 @@ def main(path_train, path_test, path_save):
     }
 
     # Train models and store results
-    trained_models = {}
-    results = []
-
-    for name, model in models.items():
-        # Train the model
-        model.fit(X_train_scaled, y_train)
-        trained_models[name] = model
-    
-        # Make predictions
-        y_train_pred = model.predict(X_train_scaled)
-        y_test_pred = model.predict(X_test_scaled)
-        y_test_proba = model.predict_proba(X_test_scaled)[:, 1]
-    
-        # Calculate metrics
-        train_acc = accuracy_score(y_train, y_train_pred)
-        test_acc = accuracy_score(y_test, y_test_pred)
-        precision = precision_score(y_test, y_test_pred)
-        recall = recall_score(y_test, y_test_pred)
-        f1 = f1_score(y_test, y_test_pred)
-        roc_auc = roc_auc_score(y_test, y_test_proba)
-    
-        # Store results
-        results.append({
-            'Model': name,
-            'Train Accuracy': train_acc,
-            'Test Accuracy': test_acc,
-            'Precision': precision,
-            'Recall': recall,
-            'F1 Score': f1,
-            'ROC AUC': roc_auc
-        })
+    results, trained_models = train_evaluate_models( models, X_train_scaled, y_train, X_test_scaled, y_test)
     
     # Save the results as a dataframe
     pd.DataFrame(results).to_csv(path_save+"/model_performance_metrics.csv",index = False)
