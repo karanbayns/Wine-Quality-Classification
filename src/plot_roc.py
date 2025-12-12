@@ -31,4 +31,6 @@ def plot_roc_curves(trained_models, X_test, y_test, path_save, filename = 'roc_c
     plt.tight_layout()
 
     output_path = os.path.join(path_save, filename)
-    fig.savefig(path_save + "/roc_curves.png", dpi = 300, bbox_inches = 'tight')
+    fig.savefig(output_path, dpi = 300, bbox_inches = 'tight')
+
+    return fig, ax
