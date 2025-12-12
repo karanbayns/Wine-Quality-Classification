@@ -3,6 +3,31 @@ from sklearn.metrics import roc_curve, auc
 import os
 
 def plot_roc_curves(trained_models, X_test, y_test, path_save, filename = 'roc_curves.png', figsize = (10, 7)):
+    """
+    Plot receiver operating characteristic (ROC) curves for multiple trained models.
+
+    Parameters:
+    -----------
+    trained_models : dict
+        A dictionary where keys are model names and values are trained model instances.
+    X_test : array-like
+        feature test data.
+    y_test : array-like
+        target test data.
+    path_save : str
+        Directory path to save the ROC curve plot.
+    filename : str, optional
+        Name of the file to save the plot (default is 'roc_curves.png').
+    figsize : tuple, optional
+        Size of the figure (default is (10, 7)).
+    
+    Returns:
+    --------
+    fig : matplotlib.figure.Figure
+        The figure object containing the ROC curves.
+    ax : matplotlib.axes.Axes
+        The axes object of the plot.
+    """
     if not trained_models:
         raise ValueError("trained_models dictionary is empty.")
 
