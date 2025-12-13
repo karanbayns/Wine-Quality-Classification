@@ -44,7 +44,7 @@ Reads the raw data and saves it to a local file.
 *Example*
     
     ```bash
-    python src/read_csv.py <url_or_input_path> data/raw/raw_data.csv --delim ";"
+    python src/read_csv.py https://raw.githubusercontent.com/prudhvinathreddymalla/Red-Wine-Dataset/refs/heads/master/winequality-red.csv data/raw/raw_data.csv --delim ";"
     ```
 
 **Step 2: Process Data (`data_processing.py`)**
