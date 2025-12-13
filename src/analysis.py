@@ -35,12 +35,12 @@ def main(path_train, path_test, path_save):
     # Initialize models with class balancing
     models = {
         'Logistic Regression': LogisticRegression(
-            random_state=123, 
+            random_state=2025, 
             max_iter=1000, 
             class_weight='balanced'
         ),
         'Decision Tree': DecisionTreeClassifier(
-            random_state=123, 
+            random_state=2025, 
             max_depth=10, 
             min_samples_split=20,
             min_samples_leaf=10,
@@ -48,7 +48,7 @@ def main(path_train, path_test, path_save):
         ),
         'Random Forest': RandomForestClassifier(
             n_estimators=100, 
-            random_state=123, 
+            random_state=2025, 
             max_depth=15,
             min_samples_split=10,
             min_samples_leaf=5,
