@@ -20,7 +20,7 @@ $(RAW_DATA_PATH): src/read_csv.py
 # Data processing and splitting into train and test sets
 $(TRAIN_DATA_PATH) $(TEST_DATA_PATH): $(RAW_DATA_PATH) src/data_processing.py
 	@mkdir -p $(PROCESSED_DIR)
-	python src/data_processing.py \
+	python -m src.data_processing \
 		$(RAW_DATA_PATH) \
 		$(PROCESSED_DIR)
 
