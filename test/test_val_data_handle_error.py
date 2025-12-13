@@ -90,7 +90,7 @@ def test_val_data_handle_error():
     
     # Assertions for Valid Data Case
     
-    # A. The output DF should match the input DF (fast-forward)
+    # A. The output dataframe should match the input dataframe (fast-forward)
     tm.assert_frame_equal(validated_df_valid, df_in_valid)
     
     # B. Error cases should be None
