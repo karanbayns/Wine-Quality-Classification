@@ -1,6 +1,6 @@
 services:
   analysis-env:
-    image: karanb18/wine-quality-classification:latest
+    image: karanb18/wine-quality-classification:85459bf
     ports:
       - "8888:8888"
     volumes:
