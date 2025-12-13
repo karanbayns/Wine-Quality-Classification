@@ -4,7 +4,7 @@ import pandera as pa
 import pytest
 import json
 import logging
-from src import val_data_handle_error  # Assuming the function is imported
+from src.val_data_handle_error import val_data_handle_error  # Assuming the function is imported
 
 # Configure logging to capture output, similar to the example image
 logging.basicConfig(level=logging.INFO)
