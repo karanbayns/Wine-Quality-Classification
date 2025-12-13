@@ -17,6 +17,25 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from src.train_evaluate_models import train_evaluate_models
 
 def test_train_evaluate_models():
+    """
+    Tests the 'train_evaluate_models' function from 'src.train_evaluate_models'.
+
+    The test uses a small, manually created dataset and a Linear Regression model to check 
+    the functionality and output structure of 'train_evaluate_models' function.
+
+    It performs the following checks:
+    1. Ensures that the 'results' output is a list, and the 'trained_models'
+       output is a dictionary.
+    2. Confirms that the expected model ("Logistic Regression") is present
+       in the 'trained_models' dictionary.
+    3. Verifies that the keys of 'trained_models' match the keys of the
+       input 'models' dictionary.
+    4. Checks that the length of the 'results' list equals the number of
+       models tested.
+    5. Asserts that all evaluation metrics (Accuracy, Precision, Recall,
+       F1 Score, ROC AUC) for both training and testing are within the
+       valid range of [0.0, 1.0].
+    """
     X = pd.DataFrame(
         {
             "fixed acidity": [7.0, 6.0, 8.0, 5.0],
