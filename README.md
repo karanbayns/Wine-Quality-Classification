@@ -1,8 +1,3 @@
----
-output:
-  html_document: default
-  pdf_document: default
----
 # Wine Quality Classification Analysis
 ## Contributors
 Aidan Hew
@@ -19,7 +14,34 @@ Wine Quality Classification is a reproducible project for classifying different 
 ### Setup
 1. Clone the repository to your local machine
 
-### Running the analysis
+### Running the Full Analysis
+The entire pipeline can be executed with one command:
+```bash
+make all
+```
+This will automatically:
+1. Download the raw data
+2. Process and split the data
+3. Perform EDA
+4. Train and evaluate the models
+
+#### Makefile Targets
+**Run EDA:**
+```bash
+make eda
+```
+
+**Train and Evaluate Models:**
+```bash
+make analyze
+```
+
+**Clean All Generated Files:**
+```bash
+make clean
+```
+
+### Pipeline Details
 1. Create the virtual environment by using the following command line (if your laptop uses MacOS):
 ```bash
 conda env create -f environment.yml
@@ -43,9 +65,9 @@ Reads the raw data and saves it to a local file.
     
 *Example*
     
-    ```bash
-    python src/read_csv.py <url_or_input_path> data/raw/raw_data.csv --delim ";"
-    ```
+```bash
+python src/read_csv.py https://raw.githubusercontent.com/prudhvinathreddymalla/Red-Wine-Dataset/refs/heads/master/winequality-red.csv data/raw/raw_data.csv --delim ";"
+```
 
 **Step 2: Process Data (`data_processing.py`)**
 Validates data schema, handles outliers/missing values, and splits data into train/test sets.
@@ -57,9 +79,9 @@ Validates data schema, handles outliers/missing values, and splits data into tra
     
 *Example*
     
-    ```bash
-    python src/data_processing.py data/raw/raw_data.csv data/processed/
-    ```
+```bash
+python src/data_processing.py data/raw/raw_data.csv data/processed/
+```
 
 **Step 3: Exploratory Data Analysis (EDA) (`eda.py`)**
 Generates summary statistics, correlation heatmaps, and distribution plots from train data
@@ -71,9 +93,9 @@ Generates summary statistics, correlation heatmaps, and distribution plots from 
     
 *Example*
     
-    ```bash
-    python src/eda.py data/processed/train_data.csv results/figures/
-    ```
+```bash
+python src/eda.py data/processed/train_data.csv results/figures/
+```
 
 **Step 4: Analysis (`analysis.py`)**
 Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs performance metrics and ROC curves.
@@ -86,9 +108,9 @@ Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs per
     
 *Example*
     
-    ```bash
-    python src/analysis.py data/processed/train_data.csv data/processed/test_data.csv results/models/
-    ```
+```bash
+python src/analysis.py data/processed/train_data.csv data/processed/test_data.csv results/models/
+```
     
 **Important Note on Output Paths!!**
 
@@ -114,15 +136,19 @@ Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs per
 3. Follow the process mentioned in the 'The way to use the container image', so that you can use the updated container image.
 
 ## Dependencies
-  - click
+  - click=8.3.1
   - pandas=2.2.2
   - scikit-learn=1.4.2
   - jupyter=1.1.1
   - python=3
   - numpy=1.26.4
   - altair=6.0.0
-  - vl-convert-python
+  - vl-convert-python=1.8.0
   - pandera=0.27.0
+  - matplotlib=3.10.8
+  - quarto=1.8.26
+  - tabulate=0.9.0
+  - pytest=9.0.2
 
 ## License
 The project is licensed under the MIT License and CC BY-NC-ND 4.0 license. The detail is in LICENSE.md.
