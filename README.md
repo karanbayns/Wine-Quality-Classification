@@ -19,7 +19,39 @@ Wine Quality Classification is a reproducible project for classifying different 
 ### Setup
 1. Clone the repository to your local machine
 
-### Running the analysis
+### Running the Full Analysis
+The entire pipeline can be executed with one command:
+```bash
+make all
+```
+This will automatically:
+1. Download the raw data
+2. Process and split the data
+3. Perform EDA
+4. Train and evaluate the models
+
+#### Makefile Targets
+**Run Everything:**
+```bash
+make all
+```
+
+**Run EDA:**
+```bash
+make eda
+```
+
+**Train and Evaluate Models:**
+```bash
+make analyze
+```
+
+**Clean All Generated Files:**
+```bash
+make clean
+```
+
+### Pipeline Details
 1. Create the virtual environment by using the following command line (if your laptop uses MacOS):
 ```bash
 conda env create -f environment.yml
