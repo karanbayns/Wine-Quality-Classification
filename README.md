@@ -141,15 +141,19 @@ Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs per
 3. Follow the process mentioned in the 'The way to use the container image', so that you can use the updated container image.
 
 ## Dependencies
-  - click
+  - click=8.3.1
   - pandas=2.2.2
   - scikit-learn=1.4.2
   - jupyter=1.1.1
   - python=3
   - numpy=1.26.4
   - altair=6.0.0
-  - vl-convert-python
+  - vl-convert-python=1.8.0
   - pandera=0.27.0
+  - matplotlib=3.10.8
+  - quarto=1.8.26
+  - tabulate=0.9.0
+  - pytest=9.0.2
 
 ## License
 The project is licensed under the MIT License and CC BY-NC-ND 4.0 license. The detail is in LICENSE.md.
