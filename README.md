@@ -65,9 +65,9 @@ Reads the raw data and saves it to a local file.
     
 *Example*
     
-    ```bash
-    python src/read_csv.py https://raw.githubusercontent.com/prudhvinathreddymalla/Red-Wine-Dataset/refs/heads/master/winequality-red.csv data/raw/raw_data.csv --delim ";"
-    ```
+```bash
+python src/read_csv.py https://raw.githubusercontent.com/prudhvinathreddymalla/Red-Wine-Dataset/refs/heads/master/winequality-red.csv data/raw/raw_data.csv --delim ";"
+```
 
 **Step 2: Process Data (`data_processing.py`)**
 Validates data schema, handles outliers/missing values, and splits data into train/test sets.
@@ -79,9 +79,9 @@ Validates data schema, handles outliers/missing values, and splits data into tra
     
 *Example*
     
-    ```bash
-    python src/data_processing.py data/raw/raw_data.csv data/processed/
-    ```
+```bash
+python src/data_processing.py data/raw/raw_data.csv data/processed/
+```
 
 **Step 3: Exploratory Data Analysis (EDA) (`eda.py`)**
 Generates summary statistics, correlation heatmaps, and distribution plots from train data
@@ -93,9 +93,9 @@ Generates summary statistics, correlation heatmaps, and distribution plots from 
     
 *Example*
     
-    ```bash
-    python src/eda.py data/processed/train_data.csv results/figures/
-    ```
+```bash
+python src/eda.py data/processed/train_data.csv results/figures/
+```
 
 **Step 4: Analysis (`analysis.py`)**
 Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs performance metrics and ROC curves.
@@ -108,9 +108,9 @@ Trains Logistic Regression, Decision Tree, and Random Forest models. Outputs per
     
 *Example*
     
-    ```bash
-    python src/analysis.py data/processed/train_data.csv data/processed/test_data.csv results/models/
-    ```
+```bash
+python src/analysis.py data/processed/train_data.csv data/processed/test_data.csv results/models/
+```
     
 **Important Note on Output Paths!!**
 
