@@ -26,11 +26,6 @@ This will automatically:
 4. Train and evaluate the models
 
 #### Makefile Targets
-**Run Everything:**
-```bash
-make all
-```
-
 **Run EDA:**
 ```bash
 make eda
