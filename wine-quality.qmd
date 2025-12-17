@@ -13,6 +13,8 @@ execute:
   echo: false      
   fig-width: 6      
   fig-height: 4  
+project:
+  output-dir: reports/
 ---
 
 
@@ -71,13 +73,13 @@ from tabulate import tabulate
 raw_data = pd.read_csv('./data/raw/raw_data.csv')
 
 # Summary statistics of all features
-data_summary = pd.read_csv('results/figures/summary_table.csv')
+data_summary = pd.read_csv('results/eda/summary_table.csv')
 Markdown(data_summary.to_markdown(index = False))
 ```
 
-![Correlation among features.](./results/figures/eda_heatmap.png){#fig-corr_heatmap width=70%}
+![Correlation among features.](./results/eda/eda_heatmap.png){#fig-corr_heatmap width=70%}
 
-![Distributions of features by wine quality](./results/figures/eda_hists.png){#fig-feature_dists width=80%}
+![Distributions of features by wine quality](./results/eda/eda_hists.png){#fig-feature_dists width=80%}
 
 @fig-corr_heatmap showed only a few features that displayed meaningful relationships with the quality of wine. In particular, alcohol, sulphates, and volatile acidity exhibited the strongest correlations with our target. High-quality wines were associated with higher alcohol and sulphate levels but lower volatile acidity. The @fig-feature_dists helped to demonstrate this separation in distribution of high and low-quality wines for these features. Finally, the dataset contained a notable imbalance, with relatively few high-quality wines, implying the need for class balancing in the later modelling stages.
 

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.26">
+<meta name="generator" content="quarto-1.7.33">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -46,15 +46,14 @@ div.csl-indent {
 <script src="wine-quality_files/libs/clipboard/clipboard.min.js"></script>
 <script src="wine-quality_files/libs/quarto-html/quarto.js" type="module"></script>
 <script src="wine-quality_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="wine-quality_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="wine-quality_files/libs/quarto-html/popper.min.js"></script>
 <script src="wine-quality_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="wine-quality_files/libs/quarto-html/anchor.min.js"></script>
 <link href="wine-quality_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="wine-quality_files/libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="wine-quality_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="wine-quality_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="wine-quality_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="wine-quality_files/libs/bootstrap/bootstrap-1e118674f8eeaf0dc11d6faf9a2d8791.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="wine-quality_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -127,10 +126,10 @@ div.csl-indent {
 <section id="exploratory-data-analysis" class="level1">
 <h1>Exploratory Data Analysis</h1>
 <div class="cell" data-execution_count="2" data-tbl-cap-location="bottom">
-<div id="tbl-feature-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="bottom" data-execution_count="2">
+<div id="tbl-feature-summary" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="2" data-tbl-cap-location="bottom">
 <figure class="quarto-float quarto-float-tbl figure">
 <div aria-describedby="tbl-feature-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="2">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="12">
 <table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <colgroup>
 <col style="width: 7%">
@@ -288,7 +287,7 @@ Table&nbsp;1: Summary statistics for physicochemical features
 <div id="fig-corr_heatmap" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-corr_heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="./results/figures/eda_heatmap.png" class="img-fluid figure-img" style="width:70.0%">
+<img src="./results/eda/eda_heatmap.png" class="img-fluid figure-img" style="width:70.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-corr_heatmap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;1: Correlation among features.
@@ -298,7 +297,7 @@ Figure&nbsp;1: Correlation among features.
 <div id="fig-feature_dists" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-feature_dists-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="./results/figures/eda_hists.png" class="img-fluid figure-img" style="width:80.0%">
+<img src="./results/eda/eda_hists.png" class="img-fluid figure-img" style="width:80.0%">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-feature_dists-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;2: Distributions of features by wine quality
@@ -330,10 +329,10 @@ Figure&nbsp;3: ROC Curves for Binary Wine Quality Classification
 <section id="results" class="level1">
 <h1>Results</h1>
 <div class="cell" data-execution_count="3" data-tbl-cap-location="bottom">
-<div id="tbl-model-metrics" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-tbl-cap-location="bottom" data-execution_count="3">
+<div id="tbl-model-metrics" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="3" data-tbl-cap-location="bottom">
 <figure class="quarto-float quarto-float-tbl figure">
 <div aria-describedby="tbl-model-metrics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="3">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="13">
 <table class="do-not-create-environment cell caption-top table table-sm table-striped small">
 <colgroup>
 <col style="width: 20%">
@@ -475,14 +474,13 @@ Ozturk, Burcu, and Ertan Anli. 2014. <span>“Different Techniques for Reducing 
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-      const outerScaffold = trigger.parentElement.cloneNode(true);
-      const codeEl = outerScaffold.querySelector('code');
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
         }
-      }
-      return codeEl.innerText;
+        return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
