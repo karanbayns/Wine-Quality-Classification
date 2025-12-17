@@ -7,4 +7,4 @@ RUN conda env update --quiet --file /tmp/conda-lock.yml --name base \
     && fix-permissions "${CONDA_DIR}" \
     && fix-permissions "/home/${NB_USER}"
 
-RUN pip install deepchecks==0.18.1
+RUN pip install deepchecks==0.18.1 click==8.3.1
