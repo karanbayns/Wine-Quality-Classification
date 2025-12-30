@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Fixed the Bash code block fencing in `README.md` to improve readability:
 https://github.com/karanbayns/Wine-Quality-Classification/commit/ff3654f181ddbc173861753a6bb293838805ae3c
 
-- Fixed the inconsistent `random_seed` in scripts:
+- Fixed the inconsistent `random_state` in scripts:
 https://github.com/karanbayns/Wine-Quality-Classification/commit/7a484655e2ab1631a26cf75ec7f757a12cddce8a
 
 ### Changed
