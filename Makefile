@@ -1,14 +1,19 @@
-# Aliases for directories and .csv files
+.PHONY: all eda analyze reports clean
+
+# Aliases for directories, .csv files, and reports
 RAW_DATA_PATH = data/raw/raw_data.csv
 PROCESSED_DIR = data/processed/
 TRAIN_DATA_PATH = $(PROCESSED_DIR)train_data.csv
 TEST_DATA_PATH = $(PROCESSED_DIR)test_data.csv
 EDA_RESULTS_DIR = results/eda/
 ANALYSIS_RESULTS_DIR = results/models/
+REPORTS_DIR = reports/
+REPORT_QMD = $(REPORTS_DIR)wine-quality.qmd
+REPORT_HTML = $(REPORTS_DIR)wine-quality.html
+REPORT_PDF = $(REPORTS_DIR)wine-quality.pdf
 
 # all target to run all scripts in correct order
-.PHONY: all
-all : eda analyze
+all : eda analyze reports
 
 # Read .csv file (raw data) from the url
 $(RAW_DATA_PATH): src/read_csv.py
@@ -39,12 +44,18 @@ analyze: $(TRAIN_DATA_PATH) $(TEST_DATA_PATH) src/analysis.py
 		$(TEST_DATA_PATH) \
 		$(ANALYSIS_RESULTS_DIR)
 
-# clean target to delete all generated data and files
-.PHONY: clean
+# Render the reports in HTML and PDF format
+reports: $(REPORT_HTML) $(REPORT_PDF)
+
+$(REPORT_HTML): $(REPORT_QMD) eda analyze
+	@mkdir -p $(REPORTS_DIR)
+	quarto render $(REPORT_QMD) --to html
+
+$(REPORT_PDF): $(REPORT_QMD) eda analyze
+	@mkdir -p $(REPORTS_DIR)
+	quarto render $(REPORT_QMD) --to pdf
+
+# Clean target to delete all generated data and files
 clean :
-	rm -f $(RAW_DATA_PATH)
-	rm -rf $(PROCESSED_DIR)
-	rm -rf $(EDA_RESULTS_DIR)
-	rm -rf $(ANALYSIS_RESULTS_DIR)
-	rm -rf src/__pycache__
-	rm -rf data results
+	rm -rf data results src/__pycache__
+	rm -f $(REPORT_HTML) $(REPORT_PDF)
