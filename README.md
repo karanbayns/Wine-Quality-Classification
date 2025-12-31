@@ -14,6 +14,19 @@ Wine Quality Classification is a reproducible project for classifying different 
 ### Setup
 1. Clone the repository to your local machine
 
+### Using the container image
+1. Use the command line `docker compose up -d`, it will create a container and you will see the similar result below.
+<img width="673" height="59" alt="截屏2025-11-29 上午11 47 18" src="https://github.com/user-attachments/assets/b27dd873-45ac-4a41-93d1-5342a636e271" />
+
+2. Use the command line `docker ps` to see the status of the container we created
+<img width="1511" height="72" alt="截屏2025-11-29 上午11 48 22" src="https://github.com/user-attachments/assets/51f54202-82a7-46ff-b8b6-66447fc48265" />
+
+3. Use the command line `docker logs wine-quality-classification-analysis-env-1` ('wine-quality-classification-analysis-env-1' is the name of the container can be find in the `docker ps` result)
+<img width="706" height="77" alt="截屏2025-11-29 上午11 50 19" src="https://github.com/user-attachments/assets/66c20388-559c-460e-ad37-51e67b87e337" />
+
+4. The result of step 3 includes URL's. Click on the second URL to open the project in a JupyterLab.
+5. Now you can run the full analysis by following the instructions below.
+
 ### Running the Full Analysis
 The entire pipeline can be executed with one command:
 ```bash
@@ -116,19 +129,6 @@ python src/analysis.py data/processed/train_data.csv data/processed/test_data.cs
 
 * For `read_csv.py`, the `path_save` argument must be a **full file path** (e.g., `data/data.csv`).
 * For `data_processing.py`, `eda.py`, and `analysis.py`, the `path_save` argument must be a **directory** (e.g., `data/processed/`), because the filenames are hardcoded within the scripts.
-
-### Using the container image
-1. Since we provide the 'docker-compose.yml' file, use the command line 'docker compose up -d', it will create a container and you will see the similar result below.
-<img width="673" height="59" alt="截屏2025-11-29 上午11 47 18" src="https://github.com/user-attachments/assets/b27dd873-45ac-4a41-93d1-5342a636e271" />
-
-2. Use the command line 'docker ps' to see the status of the container we created
-<img width="1511" height="72" alt="截屏2025-11-29 上午11 48 22" src="https://github.com/user-attachments/assets/51f54202-82a7-46ff-b8b6-66447fc48265" />
-
-3. Use the command line 'docker logs wine-quality-classification-analysis-env-1' ('wine-quality-classification-analysis-env-1' is the name of the container can be find in the 'docker ps' result)
-<img width="706" height="77" alt="截屏2025-11-29 上午11 50 19" src="https://github.com/user-attachments/assets/66c20388-559c-460e-ad37-51e67b87e337" />
-
-4. The result of step 3 includes URL's. Click on the second URL to open the project in a JupyterLab.
-5. Now you can run the code to reproduce the anaylsis process.
 
 ### Updating the container image
 1. Stop and remove the original one by using `docker compose down`
